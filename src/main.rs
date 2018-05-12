@@ -59,6 +59,6 @@ fn main() {
     let stdin = std::io::stdin();
     let mut r = utils::StdinReader::new(stdin.lock());
 
-    let a: String = r.readl::<String>();
-    println!("{}", a.chars().filter(|&c| c == '1').count());
+    let a: u32 = r.readl::<u32>();
+    println!("{}", (0..a).map(|n| if n == a-1 { r.readl::<u32>().trailing_zeros() } else { r.reads::<u32>().trailing_zeros() }).min().unwrap());
 }
