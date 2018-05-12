@@ -56,41 +56,19 @@ mod utils {
 }
 
 fn main() {
+    use std::collections::HashSet;
+
     let stdin = std::io::stdin();
     let mut r = utils::StdinReader::new(stdin.lock());
 
     let n: u32 = r.readl::<u32>();
-    let mut alice: u32 = 0;
-    let mut bob: u32 = 0;
     let mut nums = Vec::with_capacity(n as usize);
 
-    for i in 0..n {
-        if i == n - 1 {
-            nums.push(r.readl::<u32>());
-        } else {
-            nums.push(r.reads::<u32>());
-        }
+    for _ in 0..n {
+        nums.push(r.readl::<u32>());
     }
 
-    nums.sort();
+    let uniq_nums: HashSet<u32> = nums.into_iter().collect();
 
-    if n % 2 == 0 {
-        for i in 0..n as usize {
-            if i % 2 == 0 {
-                bob += nums[i];
-            } else {
-                alice += nums[i];
-            }
-        }
-    } else {
-        for i in 0..n as usize {
-            if i % 2 == 0 {
-                alice += nums[i];
-            } else {
-                bob += nums[i];
-            }
-        }
-    }
-
-    println!("{}", alice - bob);
+    println!("{}", uniq_nums.len());
 }
