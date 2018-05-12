@@ -59,19 +59,13 @@ fn main() {
     let stdin = std::io::stdin();
     let mut r = utils::StdinReader::new(stdin.lock());
 
-    let a: u32 = r.readl::<u32>();
+    let n: u32 = r.reads::<u32>();
+    let a: u32 = r.reads::<u32>();
     let b: u32 = r.readl::<u32>();
-    let c: u32 = r.readl::<u32>();
-    let x: u32 = r.readl::<u32>();
-    let mut ans: u32 = 0;
-    for i in 0..a+1 {
-        for j in 0..b+1 {
-            for k in 0..c+1 {
-                if 500 * i + 100 * j + 50 * k == x {
-                    ans += 1;
-                }
-            }
-        }
-    }
-    println!("{}", ans);
+    let sum: u32 = (1..n+1).filter(|i| {
+        let digit_sum = i.to_string().chars().map(|c| ((c as u8) - b'0') as u32).sum();
+        a <= digit_sum && digit_sum <= b
+    }).sum();
+
+    println!("{}", sum);
 }
