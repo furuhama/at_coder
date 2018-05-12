@@ -60,5 +60,18 @@ fn main() {
     let mut r = utils::StdinReader::new(stdin.lock());
 
     let a: u32 = r.readl::<u32>();
-    println!("{}", (0..a).map(|n| if n == a-1 { r.readl::<u32>().trailing_zeros() } else { r.reads::<u32>().trailing_zeros() }).min().unwrap());
+    let b: u32 = r.readl::<u32>();
+    let c: u32 = r.readl::<u32>();
+    let x: u32 = r.readl::<u32>();
+    let mut ans: u32 = 0;
+    for i in 0..a+1 {
+        for j in 0..b+1 {
+            for k in 0..c+1 {
+                if 500 * i + 100 * j + 50 * k == x {
+                    ans += 1;
+                }
+            }
+        }
+    }
+    println!("{}", ans);
 }
