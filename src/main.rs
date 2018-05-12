@@ -56,19 +56,21 @@ mod utils {
 }
 
 fn main() {
-    use std::collections::HashSet;
-
     let stdin = std::io::stdin();
     let mut r = utils::StdinReader::new(stdin.lock());
 
-    let n: u32 = r.readl::<u32>();
-    let mut nums = Vec::with_capacity(n as usize);
+    let n: u32 = r.reads::<u32>();
+    let yen: u32 = r.readl::<u32>();
 
-    for _ in 0..n {
-        nums.push(r.readl::<u32>());
+    'outer: for x in 0..n+1 {
+        for y in 0..n+1-x {
+            if 10000 * x + 5000 * y + 1000 * (n - x - y) == yen {
+                println!("{} {} {}", x, y, n - x - y);
+                break 'outer;
+            }
+            if x == n {
+                println!("-1 -1 -1");
+            }
+        }
     }
-
-    let uniq_nums: HashSet<u32> = nums.into_iter().collect();
-
-    println!("{}", uniq_nums.len());
 }
