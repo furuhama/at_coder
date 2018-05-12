@@ -16,11 +16,13 @@ mod utils {
         }
 
         // 区切り文字：スペース
+        #[allow(dead_code)]
         pub fn reads<T: FromStr>(&mut self) -> T {
             self.read_until(b' ')
         }
 
         // 区切り文字：改行
+        #[allow(dead_code)]
         pub fn readl<T: FromStr>(&mut self) -> T {
             self.read_until(b'\n')
         }
@@ -57,12 +59,6 @@ fn main() {
     let stdin = std::io::stdin();
     let mut r = utils::StdinReader::new(stdin.lock());
 
-    let a: u32 = r.reads::<u32>();
-    let b: u32 = r.readl::<u32>();
-
-    if (a%2==0) || (b%2==0) {
-        println!("Even");
-    } else {
-        println!("Odd");
-    };
+    let a: String = r.readl::<String>();
+    println!("{}", a.chars().filter(|&c| c == '1').count());
 }
