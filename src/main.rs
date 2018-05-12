@@ -57,10 +57,12 @@ fn main() {
     let stdin = std::io::stdin();
     let mut r = utils::StdinReader::new(stdin.lock());
 
-    let a: u32 = r.readl::<u32>();
-    let b: u32 = r.reads::<u32>();
-    let c: u32 = r.readl::<u32>();
-    let s: String = r.readl::<String>();
+    let a: u32 = r.reads::<u32>();
+    let b: u32 = r.readl::<u32>();
 
-    println!("{} {}", a+b+c, s);
+    if (a%2==0) || (b%2==0) {
+        println!("Even");
+    } else {
+        println!("Odd");
+    };
 }
