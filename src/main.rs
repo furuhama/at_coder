@@ -59,18 +59,10 @@ fn main() {
     let stdin = std::io::stdin();
     let mut r = utils::StdinReader::new(stdin.lock());
 
-    let n: u32 = r.reads::<u32>();
-    let yen: u32 = r.readl::<u32>();
+    let s = r.readl::<String>();
+    let patterns = ["eraser", "erase", "dreamer", "dream"];
 
-    'outer: for x in 0..n+1 {
-        for y in 0..n+1-x {
-            if 10000 * x + 5000 * y + 1000 * (n - x - y) == yen {
-                println!("{} {} {}", x, y, n - x - y);
-                break 'outer;
-            }
-            if x == n {
-                println!("-1 -1 -1");
-            }
-        }
-    }
+    let rest = patterns.iter().fold(s, |t, x| t.replace(x, ""));
+
+    println!("{}", if rest.is_empty() { "YES" } else { "NO" });
 }
