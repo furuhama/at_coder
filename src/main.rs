@@ -59,10 +59,39 @@ fn main() {
     let stdin = std::io::stdin();
     let mut r = utils::StdinReader::new(stdin.lock());
 
-    let s = r.readl::<String>();
-    let patterns = ["eraser", "erase", "dreamer", "dream"];
+    let n = r.readl::<u32>();
 
-    let rest = patterns.iter().fold(s, |t, x| t.replace(x, ""));
+    let mut base_condition = [0 as i32, 0 as i32, 0 as i32];
 
-    println!("{}", if rest.is_empty() { "YES" } else { "NO" });
+    let mut t: i32;
+    let mut x: i32;
+    let mut y: i32;
+
+    let mut diff_t: i32;
+    let mut diff_x: i32;
+    let mut diff_y: i32;
+
+    for i in 1..n+1 {
+        t = r.reads::<i32>();
+        x = r.reads::<i32>();
+        y = r.readl::<i32>();
+
+        diff_t = t - base_condition[0];
+        diff_x = (x - base_condition[1]).abs();
+        diff_y = (y - base_condition[2]).abs();
+
+        if (diff_x + diff_y) > diff_t || (diff_x + diff_y - diff_t).abs() % 2 == 1 {
+            println!("No");
+            break;
+        }
+
+        if i == n {
+            println!("Yes");
+            break;
+        }
+
+        base_condition[0] = t;
+        base_condition[1] = x;
+        base_condition[2] = y;
+    }
 }
