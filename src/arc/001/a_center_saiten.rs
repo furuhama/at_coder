@@ -59,6 +59,7 @@ fn main() {
     let stdin = std::io::stdin();
     let mut r = utils::StdinReader::new(stdin.lock());
 
+    // drop first line
     let _ = r.readl::<u32>();
     let digit = r.readl::<String>();
 
