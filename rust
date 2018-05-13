@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+name=$(basename $1 .rs)
+rustc $@ && ./$name && rm $name
