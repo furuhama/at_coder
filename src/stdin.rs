@@ -54,3 +54,8 @@ mod utils {
         }
     }
 }
+
+fn main() {
+    let stdin = std::io::stdin();
+    let mut r = utils::StdinReader::new(stdin.lock());
+}
