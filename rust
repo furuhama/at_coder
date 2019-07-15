@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
 
+export RUST_BACKTRACE=1
+
 name=$(basename $1 .rs)
-rustc $@ && ./$name && rm $name
+rustc $@ && ./$name && rm -f $name
