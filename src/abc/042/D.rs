@@ -61,30 +61,26 @@ fn main() {
         b: usize,
     }
 
-    if h == 1 || w == 1 || (h - a == 1 && w - b == 1) {
-        println!("1");
-        return;
-    }
+    let ans = solver(h, w, a, b);
 
+    println!("{}", ans);
+}
+
+fn solver(h: usize, w: usize, a: usize, b: usize) -> usize {
     let mut cached_before = 1;
     let mut cached_after = mod_patterns(h, w - b);
 
     let mut result = cached_before * cached_after;
 
-    if h - a > 1 {
-        println!("i: 1 => {}, {}", cached_before, cached_after);
+    // start iteration only when h - a > 1
+    for i in 2..(h - a + 1) {
+        cached_before = cached_before * (i + b - 2) / (i - 1) % MOD;
+        cached_after = cached_after * (h - i + 1) / (h - i + w - b) % MOD;
 
-        for i in 2..(h - a + 1) {
-            cached_before = cached_before * (i + b - 2) / (i - 1) % MOD;
-            cached_after = cached_after * (h - i) / (h - i + w - b - 1) % MOD;
-
-            // println!("i: {} => {}, {}", i, cached_before, cached_after);
-
-            result += (cached_before * cached_after) % MOD;
-        }
+        result += cached_before * cached_after % MOD;
     }
 
-    println!("{}", result % MOD);
+    result % MOD
 }
 
 // pattern of going `h` x `w` tiles
@@ -95,19 +91,9 @@ fn mod_patterns(h: usize, w: usize) -> usize {
 
     let mut prod = 1;
 
-    for i in h..(h + w - 1) {
-        prod = prod * i;
-
-        prod = prod % MOD;
+    for i in 1..w {
+        prod = prod * ((h + w - 2) - i + 1) / i % MOD;
     }
-
-    for j in 1..w {
-        prod = prod / j;
-
-        prod = prod % MOD;
-    }
-
-    println!("{}", prod);
 
     prod
 }
