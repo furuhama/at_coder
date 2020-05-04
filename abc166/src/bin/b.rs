@@ -1,12 +1,40 @@
-use proconio::{input,fastout,marker::Chars};
+#[allow(unused_imports)]
+use proconio::{
+    fastout, input,
+    marker::{Chars, Usize1},
+};
 
-#[fastout]
+macro_rules! echo {
+    ($($e:expr),+) => ( { $(println!("{}", $e))+ } );
+}
+
 fn main() {
     input! {
         n: usize,
         k: usize,
-        ds: [(i32, Chars); k],
     }
 
-    dbg!(n, k, ds);
+    let mut all = vec![false; n];
+
+    for _ in 0..k {
+        input! {
+            d: usize,
+            ts: [Usize1; d],
+        }
+
+        for t in ts {
+            all[t] = true;
+        }
+    }
+
+    let mut result = 0;
+    for e in all {
+        if e {
+            continue;
+        }
+
+        result += 1;
+    }
+
+    echo!(result);
 }
