@@ -1,7 +1,7 @@
 #[allow(unused_imports)]
 use proconio::{
     fastout, input,
-    marker::{Chars, Usize1},
+    marker::{Bytes, Chars, Usize1},
 };
 
 macro_rules! echo {
