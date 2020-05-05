@@ -42,6 +42,7 @@ fn main() {
             continue;
         }
 
+        // v から 1 つ進むパターンの状態遷移を行う
         for &(u, a, b) in graphs[v].iter() {
             if a > money {
                 continue;
@@ -54,6 +55,7 @@ fn main() {
             }
         }
 
+        // v で 1 単位分だけ換金するパターンの状態遷移を行う
         let time = time + p[v].1;
         let money = std::cmp::min(money + p[v].0, max_cost);
         if dp[v][money] > time {
