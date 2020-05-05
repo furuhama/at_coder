@@ -3,6 +3,7 @@ use proconio::{
     fastout, input,
     marker::{Bytes, Chars, Isize1, Usize1},
 };
+use std::cmp::{min, Reverse};
 
 #[allow(unused_macros)]
 macro_rules! echo {
@@ -14,58 +15,57 @@ fn main() {
         n: usize,
         m: usize,
         s: usize,
-        e: [(Usize1, Usize1, usize, u64); m],
-        p: [(usize, u64); n],
+        cs: [(Usize1, Usize1, usize, u64); m],
+        exchanges: [(usize, u64); n],
     }
 
-    let mut graphs = vec![vec![]; n];
-    for (a, b, c, d) in e {
-        graphs[a].push((b, c, d));
-        graphs[b].push((a, c, d));
+    let mut cities = vec![vec![]; n];
+    for (u, v, a, b) in cs {
+        cities[u].push((v, a, b));
+        cities[v].push((u, a, b));
     }
+    // n * a
+    let max_money = 50 * 50;
+    // dp[city][money] = time
+    let mut dp = vec![vec![std::u64::MAX; max_money + 1]; n];
+    // queue for (time, city, money) tuple
+    let mut q = std::collections::BinaryHeap::new();
 
-    // 都市数 N は最大 50
-    // 運賃 A は最大 50
-    // (N-1) * A だけあれば全都市回れる
-    let max_cost = 50 * 49;
+    dp[0][min(s, max_money)] = 0;
+    q.push(Reverse((0, 0, min(s, max_money))));
 
-    // dp[頂点][お金] で dp する
-    let mut dp = vec![vec![std::u64::MAX; max_cost + 1]; n];
-    dp[0][std::cmp::min(max_cost, s)] = 0;
-
-    // (時間, 都市, 金額) のタプルを入れる優先度付きキューを用意(小さい順にするため reverse している)
-    let mut pq = std::collections::BinaryHeap::new();
-    pq.push(std::cmp::Reverse((0, 0, std::cmp::min(max_cost, s))));
-
-    while let Some(std::cmp::Reverse((time, v, money))) = pq.pop() {
-        if time > dp[v][money] {
+    while let Some(Reverse((time, city, money))) = q.pop() {
+        if dp[city][money] < time {
             continue;
         }
 
-        // v から 1 つ進むパターンの状態遷移を行う
-        for &(u, a, b) in graphs[v].iter() {
-            if a > money {
+        // step forward to neighbor cities
+        for &(another, cost_m, cost_t) in cities[city].iter() {
+            // need more money!!
+            if money < cost_m {
                 continue;
             }
 
-            let time = time + b;
-            if time < dp[u][money - a] {
-                dp[u][money - a] = time;
-                pq.push(std::cmp::Reverse((time, u, money - a)));
+            let time = time + cost_t;
+            let money = money - cost_m;
+
+            if dp[another][money] > time {
+                dp[another][money] = time;
+                q.push(Reverse((time, another, money)));
             }
         }
 
-        // v で 1 単位分だけ換金するパターンの状態遷移を行う
-        let time = time + p[v].1;
-        let money = std::cmp::min(money + p[v].0, max_cost);
-        if dp[v][money] > time {
-            dp[v][money] = time;
-            pq.push(std::cmp::Reverse((time, v, money)));
+        // step forward to money exchange
+        let money = min(money + exchanges[city].0, max_money);
+        let time = time + exchanges[city].1;
+        if dp[city][money] > time {
+            dp[city][money] = time;
+            q.push(Reverse((time, city, money)));
         }
     }
 
-    for city in dp.into_iter().skip(1) {
-        let ans = city.into_iter().min().unwrap();
+    for i in dp.into_iter().skip(1) {
+        let ans = i.into_iter().min().unwrap();
         echo!(ans);
     }
 }
