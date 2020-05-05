@@ -37,28 +37,28 @@ fn main() {
     let mut pq = std::collections::BinaryHeap::new();
     pq.push(std::cmp::Reverse((0, 0, std::cmp::min(max_cost, s))));
 
-    while let Some(std::cmp::Reverse((t, v, k))) = pq.pop() {
-        if t > dp[v][k] {
+    while let Some(std::cmp::Reverse((time, v, money))) = pq.pop() {
+        if time > dp[v][money] {
             continue;
         }
 
         for &(u, a, b) in graphs[v].iter() {
-            if a > k {
+            if a > money {
                 continue;
             }
 
-            let t = t + b;
-            if t < dp[u][k - a] {
-                dp[u][k - a] = t;
-                pq.push(std::cmp::Reverse((t, u, k - a)));
+            let time = time + b;
+            if time < dp[u][money - a] {
+                dp[u][money - a] = time;
+                pq.push(std::cmp::Reverse((time, u, money - a)));
             }
         }
 
-        let t = t + p[v].1;
-        let k = std::cmp::min(k + p[v].0, max_cost);
-        if dp[v][k] > t {
-            dp[v][k] = t;
-            pq.push(std::cmp::Reverse((t, v, k)));
+        let time = time + p[v].1;
+        let money = std::cmp::min(money + p[v].0, max_cost);
+        if dp[v][money] > time {
+            dp[v][money] = time;
+            pq.push(std::cmp::Reverse((time, v, money)));
         }
     }
 
