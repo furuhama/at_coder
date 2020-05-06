@@ -64,8 +64,8 @@ fn main() {
         }
     }
 
-    for i in dp.into_iter().skip(1) {
-        let ans = i.into_iter().min().unwrap();
-        echo!(ans);
-    }
+    dp.iter()
+        .skip(1)
+        .map(|i| *i.iter().min().unwrap())
+        .for_each(|e| echo!(e));
 }
