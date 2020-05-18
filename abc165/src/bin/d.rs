@@ -10,5 +10,15 @@ macro_rules! echo {
 }
 
 fn main() {
-    unimplemented!();
+    input! {
+        a: usize,
+        b: usize,
+        n: usize,
+    }
+
+    let x = std::cmp::min(b - 1, n);
+
+    let result = a * x / b - a * (x / b);
+
+    echo!(result);
 }
