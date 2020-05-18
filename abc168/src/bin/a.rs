@@ -14,13 +14,15 @@ fn main() {
         n: usize,
     }
 
-    let n = n % 10;
-
-    if n == 3 {
-        echo!("bon");
-    } else if n == 0 || n == 1 || n == 6 || n == 8 {
-        echo!("pon");
-    } else {
-        echo!("hon");
+    match n % 10 {
+        3 => {
+            echo!("bon");
+        }
+        0 | 1 | 6 | 8 => {
+            echo!("pon");
+        }
+        _ => {
+            echo!("hon");
+        }
     }
 }
