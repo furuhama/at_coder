@@ -17,54 +17,33 @@ fn main() {
     }
 
     let mut gs = vec![vec![]; n];
-    let mut results = vec![(0, 0); n];
-
     for e in ms {
         gs[e.0].push(e.1);
         gs[e.1].push(e.0);
     }
 
-    let mut dp = vec![std::u64::MAX; n];
-    let mut bh = std::collections::BinaryHeap::new();
-    dp[0] = 0;
-    bh.push(std::cmp::Reverse((0, 0)));
+    let mut rs = vec![std::usize::MAX; n];
+    rs[0] = 0;
 
-    while let Some(tup) = bh.pop() {
-        let std::cmp::Reverse((cost, node)) = tup;
-        if dp[node] < cost {
-            continue;
-        }
+    let mut vd = std::collections::VecDeque::new();
+    vd.push_back(0);
 
-        let cost = cost + 1;
-        for &g in &gs[node] {
-            if dp[g] > cost {
-                dp[g] = cost;
-                bh.push(std::cmp::Reverse((cost, g)));
-                results[g] = (node + 1, cost); // 出力する node 番号は 1-index
+    while let Some(to) = vd.pop_front() {
+        for &g in &gs[to] {
+            if rs[g] != std::usize::MAX {
+                continue;
             }
+
+            rs[g] = to;
+            vd.push_back(g);
         }
     }
 
-    for (i, (node, cost)) in results.iter().enumerate() {
+    for i in 0..n {
         if i == 0 {
-            continue;
+            echo!("Yes");
+        } else {
+            echo!(rs[i] + 1);
         }
-        if *node == 0 {
-            echo!("No");
-            return;
-        }
-
-        if results[node - 1].1 != cost - 1 {
-            echo!("No");
-            return;
-        }
-    }
-
-    echo!("Yes");
-    for (i, e) in results.iter().enumerate() {
-        if i == 0 {
-            continue;
-        }
-        echo!(e.0);
     }
 }
