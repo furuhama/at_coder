@@ -1,3 +1,4 @@
+use num::complex::Complex;
 #[allow(unused_imports)]
 use proconio::{
     fastout, input,
@@ -17,11 +18,9 @@ fn main() {
         m: f64,
     }
 
-    let hx = a * ((60.0 * h + m) / 360.0 * std::f64::consts::PI).cos();
-    let hy = a * ((60.0 * h + m) / 360.0 * std::f64::consts::PI).sin();
-    let mx = b * (m / 30.0 * std::f64::consts::PI).cos();
-    let my = b * (m / 30.0 * std::f64::consts::PI).sin();
-    let dx = hx - mx;
-    let dy = hy - my;
-    echo!((dx * dx + dy * dy).sqrt());
+    let l = Complex::from_polar(&b, &(m / 60.0 * 2.0 * std::f64::consts::PI));
+    let s = Complex::from_polar(&a, &((60.0 * h + m) / 720.0 * 2.0 * std::f64::consts::PI));
+    let ans = (l - s).norm();
+
+    echo!(ans);
 }
