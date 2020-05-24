@@ -1,5 +1,3 @@
-// main has no procesures
-
 fn main() {
-    println!("Hello AtCoder!");
+    println!("Hello AtCoder! See contest name directories!");
 }
