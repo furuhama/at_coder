@@ -10,43 +10,38 @@ macro_rules! echo {
 }
 
 fn main() {
-    // input! {
-    //     n: usize,
-    //     k: usize,
-    //     a: [Usize1; n],
-    // }
-    let n = 4;
-    let k = 5;
-    let a = vec![3, 2, 4, 1];
-
-    let a = a.iter().map(|&e| e - 1).collect::<Vec<usize>>();
-
+    input! {
+        n: usize,
+        k: usize,
+        a: [Usize1; n],
+    }
     let mut routes = vec![];
     let mut gone = std::collections::HashMap::new();
-
-    let mut next = a[0];
+    let mut next = 0;
+    let mut loop_st = 0;
 
     for _ in 0..n {
         match gone.get(&next) {
-            Some(_) => {
+            Some(n) => {
+                loop_st = *n;
                 break;
             }
             None => {
-                routes.push(next.clone());
-                gone.insert(next.clone(), routes.len() - 1);
+                routes.push(next);
+                gone.insert(next, routes.len() - 1);
                 next = a[next];
             }
         }
     }
 
-    if k <= routes.len() {
-        echo!(routes[k - 1] + 1);
+    let loop_len = routes.len() - loop_st;
+
+    let ans = if k < loop_st {
+        routes[k]
     } else {
-        let pre = next;
-        let rest = k - pre;
-        let loop_len = routes.len() - next;
-        let rest = rest - (rest - 1) / loop_len * loop_len;
-        let k = pre + rest;
-        echo!(routes[k - 1] + 1);
-    }
+        let k = (k - loop_st) % loop_len;
+        routes[(loop_st + k)]
+    };
+
+    echo!(ans + 1);
 }
