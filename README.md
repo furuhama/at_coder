@@ -1,12 +1,5 @@
-# AtCoder solvers
+## AtCoder my answers
 
-This repo is for my AtCoder trials in Rust or any other languages.
+This repo is for my AtCoder trials.
 
-## Beginners selection
-
-Solved all of them.
-
-## ABC
-
-Update later.
-
+Mainly written in Rust, and few in Ruby or C++.
