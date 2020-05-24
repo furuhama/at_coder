@@ -157,9 +157,9 @@ fn main() {
 
     for i in 0..n {
         if i == 0 {
-            dp_p[i] = ModInt::new(m as u32);
+            dp_p[i] = ModInt::from(m);
         } else {
-            dp_p[i] = dp_p[i - 1] * ModInt::new(m as u32 - 1);
+            dp_p[i] = dp_p[i - 1] * ModInt::from(m - 1);
         }
     }
 
@@ -167,7 +167,7 @@ fn main() {
         if i == 0 {
             dp_c[i] = ModInt::one();
         } else {
-            dp_c[i] = dp_c[i - 1] * ModInt::new(n as u32 - i as u32) * ModInt::new(i as u32).inv();
+            dp_c[i] = dp_c[i - 1] * ModInt::from(n - i) * ModInt::from(i).inv();
         }
     }
 
