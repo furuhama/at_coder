@@ -167,8 +167,7 @@ fn main() {
         if i == 0 {
             dp_c[i] = ModInt::one();
         } else {
-            let val = dp_c[i - 1].value();
-            dp_c[i] = ModInt::new(((n - i) * val as usize / i) as u32);
+            dp_c[i] = dp_c[i - 1] * ModInt::new(n as u32 - i as u32) * ModInt::new(i as u32).inv();
         }
     }
 
