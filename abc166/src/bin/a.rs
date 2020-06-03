@@ -1,4 +1,4 @@
-use proconio::{input,fastout};
+use proconio::{fastout, input};
 
 #[fastout]
 fn main() {
@@ -6,7 +6,7 @@ fn main() {
         s: String,
     }
 
-    if (s == "ABC") {
+    if s == "ABC" {
         println!("ARC");
     } else {
         println!("ABC");

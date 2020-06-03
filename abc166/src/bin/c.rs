@@ -1,4 +1,5 @@
-use proconio::{input,fastout};
+#[allow(unused_imports)]
+use proconio::{fastout, input};
 use std::collections::HashMap;
 
 fn main() {
@@ -16,13 +17,13 @@ fn main() {
         let left = ms[i].0;
         let right = ms[i].1;
 
-        pairs[left-1].insert(right, ());
-        pairs[right-1].insert(left, ());
+        pairs[left - 1].insert(right, ());
+        pairs[right - 1].insert(left, ());
     }
 
     'outer: for i in 0..n {
         for neighbor in pairs[i].keys() {
-            if hs[i] <= hs[*neighbor-1] {
+            if hs[i] <= hs[*neighbor - 1] {
                 continue 'outer;
             }
         }

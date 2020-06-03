@@ -1,4 +1,5 @@
-use proconio::{input,fastout};
+#[allow(unused_imports)]
+use proconio::{fastout, input};
 use std::collections::HashMap;
 
 fn main() {
