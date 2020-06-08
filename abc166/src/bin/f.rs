@@ -20,28 +20,27 @@ fn main() {
         return;
     }
 
-    // MEMO: 先読みしたほうがいいかも
+    fn run(large: usize, small: usize, abc: &mut Vec<isize>, pattern: &mut Vec<String>) {
+        abc[large] -= 1;
+        abc[small] += 1;
+        let st = match small {
+            0 => "A",
+            1 => "B",
+            _ => "C",
+        };
+        pattern.push(st.to_string());
+    }
+
     fn phase(
         pattern: &mut Vec<String>,
         abc: &mut Vec<isize>,
         ope: &str,
         next_ope: Option<&String>,
     ) {
-        let run = |l: usize, s: usize, abc: &mut Vec<_>, pattern: &mut Vec<_>| {
-            abc[l] -= 1;
-            abc[s] += 1;
-            let st = match s {
-                0 => "A",
-                1 => "B",
-                _ => "C",
-            };
-            pattern.push(st.to_string());
-        };
-
         let (one, another, _theother) = match ope {
             "AB" => (0, 1, 2),
             "BC" => (1, 2, 0),
-            _ => (0, 2, 1),
+            _ => (2, 0, 1), // "AC"
         };
 
         if abc[one] == 0 || abc[another] == 0 {
@@ -50,34 +49,39 @@ fn main() {
             } else {
                 run(another, one, abc, pattern);
             }
-        } else {
-            if let Some(n) = next_ope {
-                // 先読み
-                if n == "AB" {
-                    if one == 0 {
-                        // 今が AB で次も AB なら A に 1 足す
-                        run(another, one, abc, pattern);
-                    } else {
-                        run(one, another, abc, pattern);
-                    }
-                } else if n == "BC" {
-                    if one == 1 {
-                        run(another, one, abc, pattern);
-                    } else {
-                        run(one, another, abc, pattern);
-                    }
+            return;
+        }
+
+        if let Some(n) = next_ope {
+            // 先読み
+            if n == "AB" {
+                if one == 1 {
+                    // 今が BC で次が AB なら B に 1 足す
+                    run(another, one, abc, pattern);
                 } else {
-                    if one == 0 {
-                        run(another, one, abc, pattern);
-                    } else {
-                        run(one, another, abc, pattern);
-                    }
+                    // 今が AC, AB で次が AB なら A に 1 足す
+                    run(one, another, abc, pattern);
+                }
+            } else if n == "BC" {
+                if one == 2 {
+                    run(another, one, abc, pattern);
+                } else {
+                    run(one, another, abc, pattern);
                 }
             } else {
-                // どちらでも同じ
-                run(one, another, abc, pattern);
+                // "AC"
+                if one == 0 {
+                    run(another, one, abc, pattern);
+                } else {
+                    run(one, another, abc, pattern);
+                }
             }
+
+            return;
         }
+
+        // どちらでも同じ
+        run(one, another, abc, pattern);
     }
 
     for i in 0..n {
