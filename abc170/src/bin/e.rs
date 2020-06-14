@@ -9,18 +9,46 @@ macro_rules! echo {
     ($($e:expr),+) => ( { $(println!("{}", $e))+ } );
 }
 
-pub trait MinMax<T> {
-    fn mmax(&self) -> Option<&T>;
-    fn mmin(&self) -> Option<&T>;
+#[derive(Clone, Debug)]
+pub struct MultiSet<T> {
+    data: std::collections::BTreeMap<T, usize>,
 }
 
-impl<T> MinMax<T> for std::collections::BTreeSet<T> {
-    fn mmax(&self) -> Option<&T> {
-        self.iter().rev().next()
+impl<T: std::cmp::Ord> MultiSet<T> {
+    pub fn new() -> Self {
+        Self {
+            data: std::collections::BTreeMap::new(),
+        }
     }
 
-    fn mmin(&self) -> Option<&T> {
-        self.iter().next()
+    pub fn push(&mut self, v: T) {
+        *self.data.entry(v).or_insert(0) += 1;
+    }
+
+    pub fn remove(&mut self, v: T) -> Result<(), ()> {
+        match self.data.get_mut(&v) {
+            Some(i) => {
+                if *i == 1 {
+                    self.data.remove(&v).unwrap();
+                } else {
+                    *i -= 1;
+                }
+                Ok(())
+            }
+            None => Err(()),
+        }
+    }
+
+    pub fn max(&self) -> Option<&T> {
+        self.data.iter().rev().next().map(|(k, _)| k)
+    }
+
+    pub fn min(&self) -> Option<&T> {
+        self.data.iter().next().map(|(k, _)| k)
+    }
+
+    pub fn len(&self) -> usize {
+        self.data.len()
     }
 }
 
@@ -36,16 +64,16 @@ fn main() {
     let mut infants = infants;
     let size = 2 * 10_usize.pow(5);
 
-    let mut max_sets = vec![std::collections::BTreeSet::new(); size];
+    let mut max_sets = vec![MultiSet::new(); size];
     for i in infants.iter() {
-        max_sets[i.1 - 1].insert(i.0);
+        max_sets[i.1 - 1].push(i.0);
     }
 
-    let mut min_set = std::collections::BTreeSet::new();
+    let mut min_set = MultiSet::new();
     for max in max_sets.iter() {
-        match max.mmax() {
-            Some(m) => min_set.insert(*m),
-            _ => true,
+        match max.max() {
+            Some(m) => min_set.push(*m),
+            _ => {}
         };
     }
 
@@ -56,23 +84,23 @@ fn main() {
 
         infants[q.0 - 1] = (rate, next + 1);
 
-        let now_max_before = max_sets[now].mmax().unwrap().clone();
-        min_set.remove(&now_max_before);
-        match max_sets[next].mmax() {
-            Some(m) => min_set.remove(m),
-            _ => true,
+        let now_max_before = max_sets[now].max().unwrap().clone();
+        min_set.remove(now_max_before).unwrap();
+        match max_sets[next].max() {
+            Some(m) => min_set.remove(*m).unwrap(),
+            _ => {}
         };
 
-        max_sets[now].remove(&rate);
-        max_sets[next].insert(rate);
+        max_sets[now].remove(rate).unwrap();
+        max_sets[next].push(rate);
 
-        match max_sets[now].mmax() {
-            Some(m) => min_set.insert(*m),
-            _ => true,
+        match max_sets[now].max() {
+            Some(m) => min_set.push(*m),
+            _ => {}
         };
-        let next_max_after = max_sets[next].mmax().unwrap().clone();
-        min_set.insert(next_max_after);
+        let next_max_after = max_sets[next].max().unwrap().clone();
+        min_set.push(next_max_after);
 
-        echo!(min_set.mmin().unwrap());
+        echo!(min_set.min().unwrap());
     }
 }
