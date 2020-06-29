@@ -68,26 +68,35 @@ fn main() {
 
     let seed = [13; 32];
     let mut rng: rand::rngs::StdRng = rand::SeedableRng::from_seed(seed);
-    let ch_contest: Vec<_> = (0..26).collect();
-    let ch_day: Vec<_> = (1..=d).collect();
 
     while std::time::SystemTime::now().duration_since(now).unwrap()
         < std::time::Duration::new(1, 900)
     {
-        if let Some(&contest) = ch_contest.choose(&mut rng) {
-            if let Some(&day) = ch_day.choose(&mut rng) {
-                let tmp = contests[day - 1];
+        if rng.gen_bool(0.5) {
+            let day1 = rng.gen_range(1, d);
+            let day2 = rng.gen_range(day1, std::cmp::min(day1 + 16, d));
+            contests.swap(day1 - 1, day2 - 1);
+            let new_score = calc_all(&contests, &s, &c);
 
-                contests[day - 1] = contest;
-                let new_score = calc_all(&contests, &s, &c);
+            if new_score > score {
+                score = new_score;
+            } else {
+                contests.swap(day1 - 1, day2 - 1);
+            }
+        } else {
+            let contest = rng.gen_range(0, 26);
+            let day = rng.gen_range(1, d + 1);
+            let tmp = contests[day - 1];
 
-                if new_score > score {
-                    score = new_score;
-                } else {
-                    contests[day - 1] = tmp;
-                }
-            };
-        };
+            contests[day - 1] = contest;
+            let new_score = calc_all(&contests, &s, &c);
+
+            if new_score > score {
+                score = new_score;
+            } else {
+                contests[day - 1] = tmp;
+            }
+        }
     }
 
     for e in contests {
