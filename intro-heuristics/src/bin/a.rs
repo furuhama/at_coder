@@ -24,14 +24,15 @@ fn calc(i: usize, day: usize, s: &Vec<Vec<isize>>, c: &Vec<isize>, last: &mut Ve
     up - down
 }
 
-#[allow(unused)]
-fn update(i: usize, j: usize, day: usize, s: &Vec<Vec<isize>>, c: &Vec<isize>) -> isize {
-    let mut ans = s[day - 1][j] - s[day - 1][i];
-    let c_diff = c[j] - c[i];
-    let i = i as isize;
-    let j = j as isize;
-    ans += c_diff * (j * j - 25 * j - i * i + 25 * i + 27 * 13);
-    ans
+fn calc_all(contests: &Vec<usize>, s: &Vec<Vec<isize>>, c: &Vec<isize>) -> isize {
+    let mut last = vec![0; 26];
+    let mut score = 0;
+
+    for (day, &i) in contests.iter().enumerate() {
+        score += calc(i, day + 1, s, c, &mut last);
+    }
+
+    score
 }
 
 fn main() {
@@ -41,10 +42,13 @@ fn main() {
         s: [[isize; 26]; d],
     }
 
+    let now = std::time::SystemTime::now();
+
     let mut last = vec![0; 26];
-    // let mut score = 0;
+    let mut score = 0;
     let mut contests = vec![];
 
+    // greedy
     for day in 1..=d {
         let mut max = std::isize::MIN;
         let mut best_i = 0;
@@ -57,28 +61,34 @@ fn main() {
             }
             last[i] = tmp;
         }
-        // score += calc(best_i, day, &s, &c, &mut last);
+        score += calc(best_i, day, &s, &c, &mut last);
         last[best_i] = day;
         contests.push(best_i);
     }
 
-    // let mut rng = rand::thread_rng();
-    // let ch_contest: Vec<_> = (0..26).collect();
-    // let ch_day: Vec<_> = (1..=d).collect();
+    let seed = [13; 32];
+    let mut rng: rand::rngs::StdRng = rand::SeedableRng::from_seed(seed);
+    let ch_contest: Vec<_> = (0..26).collect();
+    let ch_day: Vec<_> = (1..=d).collect();
 
-    // for _ in 0..1_000_000 {
-    //     if let Some(contest) = ch_contest.choose(&mut rng) {
-    //         if let Some(day) = ch_day.choose(&mut rng) {
-    //             let before = contests[*day - 1];
-    //             let update = update(before, *contest, *day, &s, &c);
-    //             if update > 0 {
-    //                 contests[*day - 1] = *contest;
-    //                 // score += update;
-    //                 // dbg!(score);
-    //             }
-    //         };
-    //     };
-    // }
+    while std::time::SystemTime::now().duration_since(now).unwrap()
+        < std::time::Duration::new(1, 900)
+    {
+        if let Some(&contest) = ch_contest.choose(&mut rng) {
+            if let Some(&day) = ch_day.choose(&mut rng) {
+                let tmp = contests[day - 1];
+
+                contests[day - 1] = contest;
+                let new_score = calc_all(&contests, &s, &c);
+
+                if new_score > score {
+                    score = new_score;
+                } else {
+                    contests[day - 1] = tmp;
+                }
+            };
+        };
+    }
 
     for e in contests {
         echo!(e + 1);
