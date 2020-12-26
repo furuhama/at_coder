@@ -13,34 +13,33 @@ fn main() {
     input! {
         n: usize,
         m: usize,
-        mut k: usize,
+        k: usize,
         a: [usize; n],
         b: [usize; m],
     }
 
-    let mut ans = 0;
-    let mut i = 0;
-    let mut j = 0;
+    let mut sum = 0;
+    let mut p = 0;
 
-    loop {
-        if i == n - 1 && j == m - 1 {
-            break;
-        } else if i == n - 2 {
-            if k < b[j] {
-                break;
-            }
+    while p < n && sum + a[p] <= k {
+        sum += a[p];
+        p += 1;
+    }
 
-            k -= b[j];
-            j += 1;
-        } else if j == m - 2 {
-            if k < a[i] {
-                break;
-            }
+    let mut ans = p;
 
-            k -= a[i];
-            i += 1;
-        } else if a[i] == b[j] {
-            a[i]
+    for (idx, e) in b.into_iter().enumerate() {
+        sum += e;
+
+        while p > 0 && sum > k {
+            p -= 1;
+            sum -= a[p];
+        }
+
+        if sum <= k {
+            ans = std::cmp::max(ans, idx + 1 + p);
         }
     }
+
+    echo!(ans);
 }
