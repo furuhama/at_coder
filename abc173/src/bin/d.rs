@@ -10,5 +10,19 @@ macro_rules! echo {
 }
 
 fn main() {
-    unimplemented!();
+    input! {
+        n: usize,
+        mut a: [usize; n],
+    };
+
+    a.sort();
+    a.reverse();
+
+    let mut ans = a[0];
+
+    for i in 0..n - 2 {
+        ans += a[i / 2 + 1];
+    }
+
+    echo!(ans);
 }
